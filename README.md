@@ -3,33 +3,48 @@ Analyse java garbage collection logs
 
 ###abstract
 
-* Still not ready.
+* Analyse java garbage collector log.
+* Measure the pause time in miliPerSecnd
+* skipLines <count>- skips first <count> lines, so only last lines are analysed
 
 
 ###usage
 
+Add logging to java Garbage collection
+
+* java -verbose:gc -Xloggc:/var/js/java.log ...
+* java -verbose:gc -Xloggc:/var/js/java.log  -XX:+ PrintGCDetails -XX:+PrintTenuringDistribution -XX:+PrintGCTimestamps ...
+* java -verbose:gc -Xloggc:/var/js/java.log  -XX:+ PrintGCDetails -XX:+PrintGCTimestamps ...
+* java -verbose:gc -Xloggc:/var/js/java.log  -XX:+PrintTenuringDistribution ...
 
 
+Running grabageCollection analyser
 
-When running with no parameters: uses default parameters.
+java -verbose:gc -Xloggc:/var/js/java.log -jar  garbageCollectionAnalyse.jar  file=/var/js/java.log4  skipLines=1000
+
+optional args:   
+skipLines=integer                     number of lines to skip before analyze
+file=string                           java garbage logfile /var/js/java.log0
+
+actual args:  [file=/var/js/java.log4, ]
+
+miliPerSec=8
+lineCount=159217
+countNoMatch=3
 
 
 ###arguments
 
 Unique prefix of argument name is enough (No need to type full name).
 
-###help
+* file=/var/js/java.log0
+* skipLines=10000                         Skip first 10000 lines
 
-* When running with no parameters (Or with) help is printed.
-* The help is created automatically.
-* See Args.java args.c
-* Nolock (tree only) each thread acces private tree
 
 ### files
 
-* Makefile -  compiles c program
-* benchmarkJava.java
-* Args.java             Argumet parser for Java (MIT license)</li>
+* garbageCollectionAnalyse.java
+* Args.java                        Argumet parser for Java (MIT license)
 
 ### License
 
