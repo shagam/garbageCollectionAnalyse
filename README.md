@@ -6,6 +6,7 @@ Analyse java garbage collection logs
 * Analyse java garbage collector log.
 * Measure the pause time in miliPerSecnd
 * skipLines <count>- skips first <count> lines, so only last lines are analysed
+*  expected format:   3.797: [GC (Allocation Failure)  854385K->28809K(1204736K), 0.0014854 secs]
 
 
 ###usage
