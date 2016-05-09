@@ -28,10 +28,10 @@ public class GarbageCollectionAnalyse {
         if (linesSkip == Integer.MAX_VALUE)
             linesSkip = 0;
 
-        String file = Args.getString ("file", args, "java garbage logfile /var/js/java.log0");     
+        String file = Args.getString ("file", args, "java garbage logfile i.e.:   file=/var/js/java.log0    ");     
         Args.showAndVerify (true);
         if (file == null) {
-            System.err.print("missing file=</var/js/java.log99\n");
+            System.err.print("\n**** Err missing:   file=/var/js/java.log99  \n");
             System.exit(1);
         }
         
@@ -104,7 +104,7 @@ public class GarbageCollectionAnalyse {
             long perSec =  sum / 10000;
             if (delay != 0)
                 perSec /= delay;
-            System.err.print("\ndelayPerSec=" + perSec);            
+            System.err.print("\nmiliPerSecPause=" + perSec);            
 
             System.err.print("\nlineCount=" + lineCount); 
 //            System.err.print("\ngroupCountWrong=" + groupCountWrong);             
