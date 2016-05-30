@@ -3,24 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
- 
- /*
-The MIT License (MIT)
-Copyright (c) <2012-2016> eli.shagam@gmail.com
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software
-and associated documentation files (the "Software"), to deal in the Software without restriction,
-including without limitation the rights to use, copy, modify, merge, publish, distribute,
-sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished 
-to do so, subject to the following conditions:
-The above copyright notice and this permission notice shall be included
-in all copies or substantial portions of the Software.
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
-AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
-FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
- 
 package garbagecollectionanalyse;
 
 import java.io.BufferedReader;
@@ -29,7 +11,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import share.cli.Args;
+
 
 /**
  *
@@ -45,7 +27,8 @@ public class GarbageCollectionAnalyse {
         int linesSkip = Args.getInteger("skipLines", args, "number of lines to skip before analyze");
         if (linesSkip == Integer.MAX_VALUE)
             linesSkip = 0;
-
+        boolean pause = Args.getBool("pause", args, "measure pause mili per sec; default measure gc time"); 
+        
         String file = Args.getString ("file", args, "java garbage logfile i.e.:   file=/var/js/java.log0    ");     
         Args.showAndVerify (true);
         if (file == null) {
@@ -66,11 +49,16 @@ public class GarbageCollectionAnalyse {
             int firstSecond = 0;
             int lastSecond = 0;
 
-    //2368.355: [GC (Allocation Failure)  409467K->288596K(414720K), 0.0143538 secs]
-    //2368.369: [Full GC (Ergonomics)  288596K->208152K(414720K), 0.5288433 secs]
+            String regex;
+            if (pause)
+                //2368.355: [GC (Allocation Failure)  409467K->288596K(414720K), 0.0143538 secs]
+                //2368.369: [Full GC (Ergonomics)  288596K->208152K(414720K), 0.5288433 secs]
+                regex = "(\\d+)\\.(\\d+): Total time for which application threads were stopped: (\\d+)\\.(\\d+) seconds" ;
+            else
+                //0.277: Total time for which application threads were stopped: 0.0279608 seconds
+                regex = "(\\d+)\\.(\\d+):[ ]*.* (\\d+)\\.(\\d+) secs.*" ;
 
-            String pattern = "(\\d+)\\.(\\d+):[ ]*.* (\\d+)\\.(\\d+) secs.*" ;
-            Pattern pat = Pattern.compile(pattern, Pattern.CASE_INSENSITIVE);
+            Pattern pat = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
 
             int lines = 0;
             while ((strLine = reader.readLine()) != null) {
@@ -96,7 +84,7 @@ public class GarbageCollectionAnalyse {
                     //groupCountWrong++;
                     continue;
                 }
-                lineCount ++;                
+                    lineCount ++;                
                 String str = m.group(1);
                 int timeSec = Integer.parseInt(str);
                 str = m.group(2);
@@ -122,7 +110,7 @@ public class GarbageCollectionAnalyse {
             long perSec =  sum / 10000;
             if (delay != 0)
                 perSec /= delay;
-            System.err.print("\nmiliPerSecPause=" + perSec);            
+            System.err.print("\n\nmiliPerSec=" + perSec);            
 
             System.err.print("\nlineCount=" + lineCount); 
 //            System.err.print("\ngroupCountWrong=" + groupCountWrong);             
